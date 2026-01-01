@@ -24,4 +24,12 @@ public class Entry {
     public byte[] getValue() {
         return this.value;
     }
+
+    public EntryType getType() {
+        return this.type;
+    }
+
+    public Instant getExpiresAt() {
+        return this.expiresAt;
+    }
 }
