@@ -2,34 +2,26 @@ package store;
 
 import java.time.Instant;
 
-public class Entry {
-    private final byte[] value;
-    private final Instant expiresAt;
-    private final EntryType type;
+import store.datatypes.Value;
 
-    public Entry(byte[] value) {
-        this(value, null, EntryType.STRING);
+public class Entry {
+    private final Value value;
+    private final Instant expiresAt;
+
+    public Entry(Value value) {
+        this(value, null);
     }
 
-    public Entry(byte[] value, Instant expiresAt, EntryType type) {
+    public Entry(Value value, Instant expiresAt) {
         this.value = value;
         this.expiresAt = expiresAt;
-        this.type = EntryType.STRING;
     }
 
     public boolean isExpired() {
         return expiresAt != null && Instant.now().isAfter(expiresAt);
     }
 
-    public byte[] getValue() {
+    public Value value() {
         return this.value;
-    }
-
-    public EntryType getType() {
-        return this.type;
-    }
-
-    public Instant getExpiresAt() {
-        return this.expiresAt;
     }
 }
