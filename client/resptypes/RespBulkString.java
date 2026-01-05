@@ -1,6 +1,6 @@
-package client.Response;
+package client.resptypes;
 
-public record BulkStringResponse(String data) implements Response {
+public record RespBulkString(String data) implements RespType {
     @Override
     public String serialize() {
         if (data == null) {

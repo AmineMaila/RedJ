@@ -2,7 +2,7 @@ package command;
 
 import java.util.List;
 
-import client.Response.Response;
+import client.resptypes.RespType;
 
 public abstract class Command {
     protected final List<byte[]> args;
@@ -11,5 +11,5 @@ public abstract class Command {
         this.args = args;
     }
 
-    public abstract Response execute(CommandContext ctx);
+    public abstract RespType execute(CommandContext ctx);
 }

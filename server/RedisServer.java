@@ -9,9 +9,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import client.ClientHandler;
+import store.DataStore;
 
 public class RedisServer {
     private final ExecutorService clientPool = Executors.newCachedThreadPool();
+    private final DataStore store = new DataStore();
     private final int port;
     private volatile boolean running = true;
 
@@ -32,7 +34,7 @@ public class RedisServer {
             while(running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    clientPool.execute(new ClientHandler(clientSocket));
+                    clientPool.execute(new ClientHandler(clientSocket, this.store));
                 } catch (SocketException se) {
                     if (running) {
                         System.out.println("SocketException in accept(): " + se.getMessage());

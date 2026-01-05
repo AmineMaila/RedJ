@@ -1,8 +1,8 @@
-package client.Response;
+package client.resptypes;
 
 import java.util.List;
 
-public record ArrayResponse(List<Response> arr) implements Response{
+public record RespArray(List<RespType> arr) implements RespType{
 
     @Override
     public String serialize() {

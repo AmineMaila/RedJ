@@ -1,6 +1,6 @@
-package client.Response;
+package client.resptypes;
 
-public record IntegerResponse(long value) implements Response {
+public record RespInteger(long value) implements RespType {
     @Override
     public String serialize() {
         return ":" + value + "\r\n";

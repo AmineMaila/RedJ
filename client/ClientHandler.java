@@ -2,26 +2,29 @@ package client;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
-import java.util.List;
 
+import client.resptypes.RespType;
 import command.Command;
+import command.CommandContext;
 import parser.Resp2Parser;
+import store.DataStore;
 
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
+    private final DataStore store;
     private final static int BUFFER_SIZE = 8192;
 
-    public ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket, DataStore store) {
         this.clientSocket = socket;
+        this.store = store;
     }
     
     @Override
     public void run() {
+        CommandContext ctx = new CommandContext(this.store);
         byte[] buf = new byte[BUFFER_SIZE];
         int bytesRead;
         try (BufferedInputStream in = new BufferedInputStream(clientSocket.getInputStream());
@@ -29,16 +32,13 @@ public class ClientHandler implements Runnable {
 
             final Resp2Parser parser = new Resp2Parser(in);
             while (true) {
-                Command commands = parser.parse();
+                RespType value = parser.parse();
 
-                // for (var cmd : commands) {
-
-                // }
             }
         } catch (EOFException e) {
             System.out.println("Client " + this.clientSocket + " Disconnected");
         } catch (IOException e) {
-            System.out.println("Connection lost: " + e.getMessage());
+            System.out.println("Encountered I/O error: " + e.getMessage());
         } finally {
             this.clientSocket.close();
         }
