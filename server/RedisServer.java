@@ -32,15 +32,16 @@ public class RedisServer {
 
 
             while(running) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
+                try (Socket clientSocket = serverSocket.accept()) {
+
+                    clientSocket.setSoTimeout(5000); // 5 sec timeout on hanging read call
                     clientPool.execute(new ClientHandler(clientSocket, this.store));
                 } catch (SocketException se) {
                     if (running) {
                         System.out.println("SocketException in accept(): " + se.getMessage());
                     }
                 } catch (IOException ioe) {
-                        System.out.println("I/O Error accepting connection: " + ioe.getMessage());
+                    System.out.println("I/O Error accepting connection: " + ioe.getMessage());
                 }
             }
         } finally {

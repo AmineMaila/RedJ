@@ -1,8 +1,24 @@
 package client.resptypes;
 
-public record RespError(String errorType, String message) implements RespType {
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+
+public final class RespError extends RuntimeException implements RespType {
+    private final String errorType;
+
+    public RespError(String errorType, String message) {
+        super(message);
+
+        this.errorType = errorType;
+    }
+
     @Override
-    public String serialize() {
-        return "-" + errorType + " " + message + "\r\n";
+    public void writeTo(OutputStream out) throws IOException {
+        out.write('-');
+        out.write(errorType.getBytes(StandardCharsets.US_ASCII));
+        out.write(' ');
+        out.write(getMessage().getBytes(StandardCharsets.US_ASCII));
+        out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
     }
 }
