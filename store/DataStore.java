@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DataStore {
-    private final Map<String, Entry> STORE = new ConcurrentHashMap<>();
+    private final Map<byte[], Entry> STORE = new ConcurrentHashMap<>();
 
-    public Entry get(String key) {
+    public Entry get(byte[] key) {
         Entry result = STORE.get(key);
         if (result == null || result.isExpired()) {
             STORE.remove(key);
@@ -15,11 +15,11 @@ public class DataStore {
         return result;
     }
 
-    public void set(String key, Entry value) {
+    public void set(byte[] key, Entry value) {
         STORE.put(key, value);
     }
 
-    public void delete(String key) {
+    public void delete(byte[] key) {
         STORE.remove(key);
     }
 }

@@ -14,6 +14,7 @@ import store.DataStore;
 public class RedisServer {
     private final ExecutorService clientPool = Executors.newCachedThreadPool();
     private final DataStore store = new DataStore();
+    private final int TIMEOUT = 60000;
     private final int port;
     private volatile boolean running = true;
 
@@ -32,9 +33,10 @@ public class RedisServer {
 
 
             while(running) {
-                try (Socket clientSocket = serverSocket.accept()) {
-
-                    clientSocket.setSoTimeout(5000); // 5 sec timeout on hanging read call
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("Client '" + clientSocket + "' connected");
+                    clientSocket.setSoTimeout(TIMEOUT); // timeout on hanging read call
                     clientPool.execute(new ClientHandler(clientSocket, this.store));
                 } catch (SocketException se) {
                     if (running) {

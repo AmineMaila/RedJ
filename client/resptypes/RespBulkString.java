@@ -5,6 +5,11 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public record RespBulkString(byte[] data) implements RespType {
+
+    public boolean isNull() {
+        return data == null;
+    }
+
     @Override
     public void writeTo(OutputStream out) throws IOException {
         if (data == null) {
@@ -18,4 +23,6 @@ public record RespBulkString(byte[] data) implements RespType {
         out.write(data);
         out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
     }
+
+    
 }

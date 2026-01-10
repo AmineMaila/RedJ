@@ -5,9 +5,9 @@ import java.util.List;
 import client.resptypes.RespType;
 
 public abstract class Command {
-    protected final List<byte[]> args;
+    protected final List<RespType> args;
 
-    public Command(List<byte[]> args) {
+    public Command(List<RespType> args) {
         this.args = args;
     }
 

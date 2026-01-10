@@ -3,6 +3,7 @@ package parser;
 import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ProtocolException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -17,14 +18,14 @@ import client.resptypes.RespSimpleString;
 import client.resptypes.RespType;
 
 public class Resp2Parser {
-    private final BufferedInputStream in;
+    private final InputStream in;
     private final static int MAX_INTEGER_LENGTH = 64;
     private final static int MAX_ELEMENTS = 1024;
     private final static int MAX_BULK = 512 * 1024;
     private final static int MAX_SIMPLE_STRING = 1024 * 1024;
     private final static int MAX_ERROR = 4096;
 
-    public Resp2Parser(BufferedInputStream in) {
+    public Resp2Parser(InputStream in) {
         this.in = in;
     }
 
@@ -41,7 +42,7 @@ public class Resp2Parser {
             case ':' -> readInteger();
             case '+' -> readSimpleString();
             case '-' -> readError();
-            default -> throw new ProtocolException("unknown RESP type");
+            default -> throw new ProtocolException("unknown RESP type '" + prefix + "'");
         };
     }
 
@@ -50,9 +51,7 @@ public class Resp2Parser {
         try {
             int arrLen = Integer.parseInt(line);
 
-            if (arrLen == -1) return new RespArray(null);
-
-            if (arrLen < -1 || arrLen > MAX_ELEMENTS) throw new ProtocolException("Invalid array length '" + arrLen + "'");
+            if (arrLen <= -1 || arrLen > MAX_ELEMENTS) throw new ProtocolException("Invalid array length '" + arrLen + "'");
 
             List<RespType> arr = new ArrayList<>(arrLen);
             for (int i = 0; i < arrLen; i++) {
