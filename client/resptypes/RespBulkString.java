@@ -17,12 +17,13 @@ public record RespBulkString(byte[] data) implements RespType {
             return;
         }
 
-        out.write('$');
-        out.write(Integer.toString(data.length).getBytes(StandardCharsets.US_ASCII));
-        out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
-        out.write(data);
-        out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
+        byte[] payload = ('$' + Integer.toString(data.length) + "\r\n" + data + "\r\n").getBytes(StandardCharsets.US_ASCII);
+
+        out.write(payload);
     }
 
-    
+    @Override
+    public final String toString() {
+        return new String(data, StandardCharsets.US_ASCII);
+    }
 }

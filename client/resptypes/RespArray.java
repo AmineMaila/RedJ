@@ -9,9 +9,8 @@ public record RespArray(List<RespType> arr) implements RespType{
 
     @Override
     public void writeTo(OutputStream out) throws IOException {
-        out.write('*');
-        out.write(Integer.toString(arr.size()).getBytes(StandardCharsets.US_ASCII));
-        out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
+        byte[] payload = ('*' + Integer.toString(arr.size()) + "\r\n").getBytes(StandardCharsets.US_ASCII);
+        out.write(payload);
         for (RespType res : arr) {
             res.writeTo(out);
         }

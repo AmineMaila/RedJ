@@ -33,9 +33,6 @@ public class ClientHandler implements Runnable {
 
 
         try (InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()) {
-        // try (BufferedInputStream in = new BufferedInputStream(clientSocket.getInputStream());
-        //     BufferedOutputStream out = new BufferedOutputStream(clientSocket.getOutputStream())) {
-            
             System.out.println("parsing...");
             final Resp2Parser respParser = new Resp2Parser(in);
             final CommandParser cmdParser = new CommandParser();

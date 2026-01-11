@@ -7,8 +7,7 @@ import java.nio.charset.StandardCharsets;
 public record RespSimpleString(String content) implements RespType {
     @Override
     public void writeTo(OutputStream out) throws IOException {
-        out.write('+');
-        out.write(content.getBytes(StandardCharsets.US_ASCII));
-        out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
+        byte[] payload = ('+' + content + "\r\n").getBytes(StandardCharsets.US_ASCII);
+        out.write(payload);
     }
 }

@@ -15,10 +15,7 @@ public final class RespError extends RuntimeException implements RespType {
 
     @Override
     public void writeTo(OutputStream out) throws IOException {
-        out.write('-');
-        out.write(errorType.getBytes(StandardCharsets.US_ASCII));
-        out.write(' ');
-        out.write(getMessage().getBytes(StandardCharsets.US_ASCII));
-        out.write("\r\n".getBytes(StandardCharsets.US_ASCII));
+        byte[] payload = ('-' + errorType + ' ' + getMessage() + "\r\n").getBytes(StandardCharsets.US_ASCII);
+        out.write(payload);
     }
 }

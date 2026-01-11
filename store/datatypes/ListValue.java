@@ -1,8 +1,13 @@
 package store.datatypes;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
+import client.resptypes.RespArray;
+import client.resptypes.RespBulkString;
+import client.resptypes.RespType;
 
 public final class ListValue implements Value {
     private Deque<byte[]> data = new ArrayDeque<>();
@@ -37,5 +42,14 @@ public final class ListValue implements Value {
     @Override
     public EntryType type() {
         return EntryType.LIST;
+    }
+
+    @Override
+    public RespType toResp() {
+        List<RespType> items = new ArrayList<>();
+        for (var e : data) {
+            items.add(new RespBulkString(e));
+        }
+        return new RespArray(items);
     }
 }

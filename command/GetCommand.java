@@ -6,9 +6,6 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import store.Entry;
-import store.datatypes.EntryType;
-import store.datatypes.StringValue;
-import store.datatypes.Value;
 
 public class GetCommand extends Command {
     private final byte[] key;
@@ -37,11 +34,9 @@ public class GetCommand extends Command {
             return new RespBulkString(null);
         }
 
-        Value val = entry.value();
-        if (val.type() != EntryType.STRING) {
+        if (!(entry.value().toResp() instanceof RespBulkString respVal))
             throw new RespError("WRONGTYPE", "Operation against a key holding the wrong kind of value");
-        }
-        StringValue sv = (StringValue) val;
-        return new RespBulkString(sv.get());
+
+        return respVal;
     }
 }
