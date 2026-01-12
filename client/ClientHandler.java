@@ -1,7 +1,5 @@
 package client;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,11 +7,14 @@ import java.io.OutputStream;
 import java.net.ProtocolException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import command.Command;
 import command.CommandContext;
+import command.WorkItem;
 import parser.CommandParser;
 import parser.Resp2Parser;
 import store.DataStore;
@@ -21,10 +22,12 @@ import store.DataStore;
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
     private final DataStore store;
+    private final LinkedBlockingQueue<WorkItem> cmdQueue;
 
-    public ClientHandler(Socket socket, DataStore store) {
+    public ClientHandler(Socket socket, DataStore store, LinkedBlockingQueue<WorkItem> cmdQueue) {
         this.clientSocket = socket;
         this.store = store;
+        this.cmdQueue = cmdQueue;
     }
     
     @Override
@@ -42,7 +45,9 @@ public class ClientHandler implements Runnable {
                         RespType request = respParser.parse();
                         System.out.println(request);
                         Command cmd = cmdParser.parse(request);
-                        RespType response = cmd.execute(ctx);
+                        WorkItem task = new WorkItem(cmd, ctx);
+                        cmdQueue.put(task);
+                        RespType response = task.result.get();
                         response.writeTo(out);
                     } catch (RespError re) {
                         re.writeTo(out);
@@ -56,6 +61,11 @@ public class ClientHandler implements Runnable {
             System.out.println("Client Socket timeout: " + te.getMessage());
         } catch (IOException ioe) {
             System.out.println("Encountered I/O error: " + ioe.getMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            cause.printStackTrace();
         } finally {
             try {
                 if (!clientSocket.isClosed()) {

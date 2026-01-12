@@ -1,6 +1,5 @@
 package command;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import client.resptypes.RespBulkString;

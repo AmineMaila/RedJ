@@ -6,14 +6,17 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import client.ClientHandler;
+import command.WorkItem;
 import store.DataStore;
 
 public class RedisServer {
     private final ExecutorService clientPool = Executors.newCachedThreadPool();
     private final DataStore store = new DataStore();
+    private final LinkedBlockingQueue<WorkItem> cmdQueue = new LinkedBlockingQueue<>();
     private final int TIMEOUT = 60000;
     private final int port;
     private volatile boolean running = true;
@@ -31,13 +34,15 @@ public class RedisServer {
                 stop();
             }));
 
+            ExecutorService consumerExecutor = Executors.newSingleThreadExecutor();
+            consumerExecutor.execute(new CommandDispatcher(cmdQueue));
 
             while(running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("Client '" + clientSocket + "' connected");
                     clientSocket.setSoTimeout(TIMEOUT); // timeout on hanging read call
-                    clientPool.execute(new ClientHandler(clientSocket, this.store));
+                    clientPool.execute(new ClientHandler(clientSocket, this.store, this.cmdQueue));
                 } catch (SocketException se) {
                     if (running) {
                         System.out.println("SocketException in accept(): " + se.getMessage());
