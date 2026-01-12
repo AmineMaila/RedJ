@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataStore {
-    private final Map<byte[], Entry> STORE = new HashMap<>();
+    private final Map<ByteArrayKey, Entry> STORE = new HashMap<>();
 
-    public Entry get(byte[] key) {
+    public Entry get(ByteArrayKey key) {
         Entry result = STORE.get(key);
         if (result == null || result.isExpired()) {
             STORE.remove(key);
@@ -15,11 +15,15 @@ public class DataStore {
         return result;
     }
 
-    public void set(byte[] key, Entry value) {
+    public void set(ByteArrayKey key, Entry value) {
         STORE.put(key, value);
     }
 
-    public void delete(byte[] key) {
+    public void delete(ByteArrayKey key) {
         STORE.remove(key);
+    }
+
+    public Map<ByteArrayKey, Entry> store() {
+        return this.STORE;
     }
 }

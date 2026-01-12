@@ -1,7 +1,7 @@
 package client.resptypes;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public final class RespError extends RuntimeException implements RespType {
@@ -14,8 +14,12 @@ public final class RespError extends RuntimeException implements RespType {
     }
 
     @Override
-    public void writeTo(OutputStream out) throws IOException {
-        byte[] payload = ('-' + errorType + ' ' + getMessage() + "\r\n").getBytes(StandardCharsets.US_ASCII);
-        out.write(payload);
+    public void writeTo(BufferedOutputStream out) throws IOException {
+        out.write('-');
+        out.write(errorType.getBytes(StandardCharsets.US_ASCII));
+        out.write(' ');
+        out.write(getMessage().getBytes(StandardCharsets.US_ASCII));
+        out.write(RespType.CRLF);
+        out.flush();
     }
 }

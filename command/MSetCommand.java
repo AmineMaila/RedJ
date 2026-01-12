@@ -6,6 +6,7 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespSimpleString;
 import client.resptypes.RespType;
+import store.ByteArrayKey;
 import store.DataStore;
 import store.Entry;
 import store.datatypes.StringValue;
@@ -23,7 +24,7 @@ public class MSetCommand extends Command {
     @Override
     public RespType execute(DataStore store) {
         for (int i = 1; i < args.size(); i+=2) {
-            byte[] key = ((RespBulkString) args.get(i)).data();
+            ByteArrayKey key = new ByteArrayKey(((RespBulkString) args.get(i)).data());
             Entry value = new Entry(new StringValue(((RespBulkString)args.get(i + 1)).data()));
             store.set(key, value);
         }

@@ -1,9 +1,9 @@
 package client;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ProtocolException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -29,7 +29,8 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
 
-        try (InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()) {
+        try (BufferedInputStream in = new BufferedInputStream(clientSocket.getInputStream());
+            BufferedOutputStream out = new BufferedOutputStream(clientSocket.getOutputStream())) {
             System.out.println("parsing...");
             final Resp2Parser respParser = new Resp2Parser(in);
             final CommandParser cmdParser = new CommandParser();

@@ -5,11 +5,12 @@ import java.util.List;
 import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
+import store.ByteArrayKey;
 import store.DataStore;
 import store.Entry;
 
 public class GetCommand extends Command {
-    private final byte[] key;
+    private final ByteArrayKey key;
 
     public GetCommand(List<RespType> args) {
         super(args);
@@ -19,7 +20,7 @@ public class GetCommand extends Command {
                 "wrong number of arguments for 'get' command"
             );
         }
-        this.key = ((RespBulkString) args.get(1)).data();
+        this.key = new ByteArrayKey(((RespBulkString) args.get(1)).data());
     }
 
     @Override
@@ -27,9 +28,11 @@ public class GetCommand extends Command {
         Entry entry = store.get(key);
 
         if (entry == null) {
+            System.out.println("entry no found");
             return new RespBulkString(null);
         }
-
+        System.out.println(entry.value().toResp());
+        
         if (entry.isExpired()) {
             store.delete(key);
             return new RespBulkString(null);

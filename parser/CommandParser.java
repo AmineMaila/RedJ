@@ -10,6 +10,7 @@ import client.resptypes.RespError;
 import client.resptypes.RespType;
 import command.Command;
 import command.GetCommand;
+import command.MSetCommand;
 import command.SetCommand;
 
 public class CommandParser {
@@ -40,6 +41,7 @@ public class CommandParser {
         return switch (cmdStr) {
             case "GET" -> new GetCommand(args);
             case "SET" -> new SetCommand(args);
+            case "MSET" -> new MSetCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
     }

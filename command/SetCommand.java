@@ -6,12 +6,13 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import client.resptypes.RespSimpleString;
+import store.ByteArrayKey;
 import store.DataStore;
 import store.Entry;
 import store.datatypes.StringValue;
 
 public class SetCommand extends Command {
-    private final byte[] key;
+    private final ByteArrayKey key;
     private final Entry value;
     private boolean nx;
     private boolean xx;
@@ -29,7 +30,7 @@ public class SetCommand extends Command {
             );
         }
 
-        key = ((RespBulkString) args.get(1)).data();
+        key = new ByteArrayKey(((RespBulkString) args.get(1)).data());
         byte[] rawValue = ((RespBulkString) args.get(2)).data();
         for (int i = 3; i < args.size(); i++) {
             String opt = args.get(i)

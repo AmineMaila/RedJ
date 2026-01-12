@@ -1,4 +1,5 @@
 ./server/RedisServer.java
+./server/CommandDispatcher.java
 ./Main.java
 ./client/ClientHandler.java
 ./client/resptypes/RespError.java
@@ -15,9 +16,13 @@
 ./store/datatypes/ListValue.java
 ./store/datatypes/HashValue.java
 ./store/datatypes/SetValue.java
+./store/ByteArrayKey.java
 ./parser/Resp2Parser.java
 ./parser/CommandParser.java
 ./command/Command.java
 ./command/SetCommand.java
 ./command/CommandContext.java
 ./command/GetCommand.java
+./command/WorkItem.java
+./command/MSetCommand.java
+./RedisClient.java
