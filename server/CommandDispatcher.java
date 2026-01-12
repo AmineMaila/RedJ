@@ -5,8 +5,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import command.WorkItem;
+import store.DataStore;
 
 public class CommandDispatcher implements Runnable {
+    private final DataStore store = new DataStore();
     private final LinkedBlockingQueue<WorkItem> cmdQueue;
 
     public CommandDispatcher(LinkedBlockingQueue<WorkItem> cmdQueue) {
@@ -19,7 +21,7 @@ public class CommandDispatcher implements Runnable {
             try {
                 WorkItem task = cmdQueue.take();
                 try {
-                    RespType result = task.run();
+                    RespType result = task.command.execute(store);
 
                     task.result.complete(result);
                 } catch (RespError e) {

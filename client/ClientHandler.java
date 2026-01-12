@@ -13,46 +13,40 @@ import java.util.concurrent.LinkedBlockingQueue;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import command.Command;
-import command.CommandContext;
 import command.WorkItem;
 import parser.CommandParser;
 import parser.Resp2Parser;
-import store.DataStore;
 
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
-    private final DataStore store;
     private final LinkedBlockingQueue<WorkItem> cmdQueue;
 
-    public ClientHandler(Socket socket, DataStore store, LinkedBlockingQueue<WorkItem> cmdQueue) {
+    public ClientHandler(Socket socket, LinkedBlockingQueue<WorkItem> cmdQueue) {
         this.clientSocket = socket;
-        this.store = store;
         this.cmdQueue = cmdQueue;
     }
     
     @Override
     public void run() {
-        CommandContext ctx = new CommandContext(this.store);
-
 
         try (InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()) {
             System.out.println("parsing...");
             final Resp2Parser respParser = new Resp2Parser(in);
             final CommandParser cmdParser = new CommandParser();
             
-                while (true) {
-                    try {
-                        RespType request = respParser.parse();
-                        System.out.println(request);
-                        Command cmd = cmdParser.parse(request);
-                        WorkItem task = new WorkItem(cmd, ctx);
-                        cmdQueue.put(task);
-                        RespType response = task.result.get();
-                        response.writeTo(out);
-                    } catch (RespError re) {
-                        re.writeTo(out);
-                    }
+            while (true) {
+                try {
+                    RespType request = respParser.parse();
+                    System.out.println(request);
+                    Command cmd = cmdParser.parse(request);
+                    WorkItem task = new WorkItem(cmd);
+                    cmdQueue.put(task);
+                    RespType response = task.result.get();
+                    response.writeTo(out);
+                } catch (RespError re) {
+                    re.writeTo(out);
                 }
+            }
         } catch (EOFException ee) {
             System.out.println("EOF encountered: " + ee.getMessage());
         } catch (ProtocolException pe) {

@@ -6,6 +6,7 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import client.resptypes.RespSimpleString;
+import store.DataStore;
 import store.Entry;
 import store.datatypes.StringValue;
 
@@ -74,8 +75,8 @@ public class SetCommand extends Command {
     }
 
     @Override
-    public RespType execute(CommandContext ctx) {
-        Entry old = ctx.store().get(key);
+    public RespType execute(DataStore store) {
+        Entry old = store.get(key);
         if ((nx && old != null) || (xx && old == null)) {
             return new RespBulkString(null);
         }
@@ -84,7 +85,7 @@ public class SetCommand extends Command {
             value.setExpiresAt(old.getExpiresAt());
         }
 
-        ctx.store().set(key, value);
+        store.set(key, value);
 
         if (get) {
             if (old == null)

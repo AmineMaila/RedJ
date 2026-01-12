@@ -5,6 +5,7 @@ import java.util.List;
 import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
+import store.DataStore;
 import store.Entry;
 
 public class GetCommand extends Command {
@@ -22,15 +23,15 @@ public class GetCommand extends Command {
     }
 
     @Override
-    public RespType execute(CommandContext ctx) {
-        Entry entry = ctx.store().get(key);
+    public RespType execute(DataStore store) {
+        Entry entry = store.get(key);
 
         if (entry == null) {
             return new RespBulkString(null);
         }
 
         if (entry.isExpired()) {
-            ctx.store().delete(key);
+            store.delete(key);
             return new RespBulkString(null);
         }
 

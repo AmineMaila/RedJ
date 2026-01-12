@@ -3,6 +3,7 @@ package command;
 import java.util.List;
 
 import client.resptypes.RespType;
+import store.DataStore;
 
 public abstract class Command {
     protected final List<RespType> args;
@@ -11,5 +12,5 @@ public abstract class Command {
         this.args = args;
     }
 
-    public abstract RespType execute(CommandContext ctx);
+    public abstract RespType execute(DataStore store);
 }

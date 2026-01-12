@@ -1,10 +1,10 @@
 package store;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DataStore {
-    private final Map<byte[], Entry> STORE = new ConcurrentHashMap<>();
+    private final Map<byte[], Entry> STORE = new HashMap<>();
 
     public Entry get(byte[] key) {
         Entry result = STORE.get(key);
