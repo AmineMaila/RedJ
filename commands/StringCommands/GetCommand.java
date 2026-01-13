@@ -1,10 +1,11 @@
-package command;
+package commands.StringCommands;
 
 import java.util.List;
 
 import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
+import commands.Command;
 import store.ByteArrayKey;
 import store.DataStore;
 import store.Entry;
@@ -28,17 +29,15 @@ public class GetCommand extends Command {
         Entry entry = store.get(key);
 
         if (entry == null) {
-            System.out.println("entry no found");
             return new RespBulkString(null);
         }
-        System.out.println(entry.value().toResp());
         
         if (entry.isExpired()) {
             store.delete(key);
             return new RespBulkString(null);
         }
 
-        if (!(entry.value().toResp() instanceof RespBulkString respVal))
+        if (!(entry.getValue().toResp() instanceof RespBulkString respVal))
             throw new RespError("WRONGTYPE", "Operation against a key holding the wrong kind of value");
 
         return respVal;

@@ -1,10 +1,11 @@
-package command;
+package commands.StringCommands;
 
 import java.util.List;
 
 import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
+import commands.Command;
 import client.resptypes.RespSimpleString;
 import store.ByteArrayKey;
 import store.DataStore;
@@ -13,7 +14,7 @@ import store.datatypes.StringValue;
 
 public class SetCommand extends Command {
     private final ByteArrayKey key;
-    private final Entry value;
+    private final StringValue value;
     private boolean nx;
     private boolean xx;
     private boolean keepTTL;
@@ -62,7 +63,7 @@ public class SetCommand extends Command {
         if (nx && xx)
             throw new RespError("ERR", "NX and XX are mutually exclusive");
 
-        value = new Entry(new StringValue(rawValue), expireAtMilis);
+        value = new StringValue(rawValue);
     }
 
     private long parseLongArg(List<RespType> args, int index) {
@@ -77,23 +78,27 @@ public class SetCommand extends Command {
 
     @Override
     public RespType execute(DataStore store) {
-        Entry old = store.get(key);
-        if ((nx && old != null) || (xx && old == null)) {
+        Entry oldVal = store.get(key);
+        if ((nx && oldVal != null) || (xx && oldVal == null)) {
             return new RespBulkString(null);
         }
 
-        if (keepTTL && old != null) {
-            value.setExpiresAt(old.getExpiresAt());
+        Entry newVal;
+
+        if (keepTTL && oldVal != null) {
+            newVal = new Entry(value, oldVal.getExpiresAt());
+        } else {
+            newVal = new Entry(value, expireAtMilis);
         }
 
-        store.set(key, value);
+        store.set(key, newVal);
 
         if (get) {
-            if (old == null)
+            if (oldVal == null)
                 return new RespBulkString(null);
-            if (!(old.value().toResp() instanceof RespBulkString respOld))
+            if (!(oldVal.getValue() instanceof StringValue strval))
                 throw new RespError("WRONGTYPE", "Operation against a key holding the wrong kind of value");
-            return respOld;
+            return strval.toResp();
         }
 
         return new RespSimpleString("OK");

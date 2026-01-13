@@ -17,6 +17,10 @@ public final class StringValue implements Value {
     public void set(byte[] data) {
         this.data = data;
     }
+
+    public int size() {
+        return this.data.length;
+    }
     
     public RespBulkString toRespBulk() {
         return new RespBulkString(data);

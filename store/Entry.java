@@ -3,8 +3,8 @@ package store;
 import store.datatypes.Value;
 
 public class Entry {
-    private final Value value;
-    private Long expiresAt;
+    private Value value;
+    private Long expiresAt; // ms
 
     public Entry(Value value) {
         this(value, null);
@@ -27,8 +27,11 @@ public class Entry {
         return Long.valueOf(this.expiresAt);
     }
 
+    public void setValue(Value newVal) {
+        this.value = newVal;
+    }
 
-    public Value value() {
+    public Value getValue() {
         return this.value;
     }
 }

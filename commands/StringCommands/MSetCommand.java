@@ -1,4 +1,4 @@
-package command;
+package commands.StringCommands;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespSimpleString;
 import client.resptypes.RespType;
+import commands.Command;
 import store.ByteArrayKey;
 import store.DataStore;
 import store.Entry;

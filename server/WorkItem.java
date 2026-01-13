@@ -1,8 +1,9 @@
-package command;
+package server;
 
 import java.util.concurrent.CompletableFuture;
 
 import client.resptypes.RespType;
+import commands.Command;
 
 public class WorkItem {
     public final Command command;

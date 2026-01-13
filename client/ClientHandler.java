@@ -12,10 +12,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import client.resptypes.RespError;
 import client.resptypes.RespType;
-import command.Command;
-import command.WorkItem;
+import commands.Command;
 import parser.CommandParser;
 import parser.Resp2Parser;
+import server.WorkItem;
 
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
@@ -38,7 +38,7 @@ public class ClientHandler implements Runnable {
             while (true) {
                 try {
                     RespType request = respParser.parse();
-                    System.out.println(request);
+                    System.out.println("Client Request: " + request);
                     Command cmd = cmdParser.parse(request);
                     WorkItem task = new WorkItem(cmd);
                     cmdQueue.put(task);

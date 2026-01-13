@@ -4,7 +4,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import client.resptypes.RespError;
 import client.resptypes.RespType;
-import command.WorkItem;
 import store.DataStore;
 
 public class CommandDispatcher implements Runnable {

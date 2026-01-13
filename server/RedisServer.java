@@ -10,7 +10,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import client.ClientHandler;
-import command.WorkItem;
 
 public class RedisServer {
     private final ExecutorService clientPool = Executors.newCachedThreadPool();

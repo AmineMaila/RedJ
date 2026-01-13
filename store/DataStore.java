@@ -19,8 +19,8 @@ public class DataStore {
         STORE.put(key, value);
     }
 
-    public void delete(ByteArrayKey key) {
-        STORE.remove(key);
+    public Entry delete(ByteArrayKey key) {
+        return STORE.remove(key);
     }
 
     public Map<ByteArrayKey, Entry> store() {
