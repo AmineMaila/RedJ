@@ -10,11 +10,14 @@ import client.resptypes.RespType;
 import commands.Command;
 import commands.KeyCommands.DelCommand;
 import commands.KeyCommands.ExpireCommand;
+import commands.StringCommands.DecrByCommand;
+import commands.StringCommands.DecrCommand;
 import commands.StringCommands.GetCommand;
 import commands.StringCommands.IncrByCommand;
 import commands.StringCommands.IncrCommand;
 import commands.StringCommands.MSetCommand;
 import commands.StringCommands.SetCommand;
+import commands.StringCommands.StrlenCommand;
 
 public class CommandParser {
 
@@ -52,7 +55,10 @@ public class CommandParser {
             case "MSET" -> new MSetCommand(args);
             case "APPEND" -> new ExpireCommand(args);
             case "INCR" -> new IncrCommand(args);
+            case "DECR" -> new DecrCommand(args);
             case "INCRBY" -> new IncrByCommand(args);
+            case "DECRBY" -> new DecrByCommand(args);
+            case "STRLEN" -> new StrlenCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
     }

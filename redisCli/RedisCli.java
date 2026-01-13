@@ -217,8 +217,8 @@ public class RedisCli {
     }
 
     /**
-     * Parse one RESP object from InputStream, capturing all bytes read into capturedOut.
-     * This blocks until the full RESP item is read (or the server closes).
+     * parse one RESP object from InputStream, capturing all bytes read into capturedOut.
+     * this blocks until the full RESP item is read (or the server closes).
      */
     private static RespType parseResp(InputStream in, ByteArrayOutputStream capturedOut) throws IOException {
         int first = readByte(in, capturedOut);

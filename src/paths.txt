@@ -21,6 +21,9 @@
 ./src/commands/StringCommands/AppendCommand.java
 ./src/commands/StringCommands/IncrCommand.java
 ./src/commands/StringCommands/IncrByCommand.java
+./src/commands/StringCommands/StrlenCommand.java
+./src/commands/StringCommands/DecrCommand.java
+./src/commands/StringCommands/DecrByCommand.java
 ./src/commands/KeyCommands/DelCommand.java
 ./src/commands/KeyCommands/ExpireCommand.java
 ./src/client/ClientHandler.java

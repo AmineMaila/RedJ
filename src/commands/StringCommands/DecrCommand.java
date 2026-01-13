@@ -13,26 +13,20 @@ import store.DataStore;
 import store.Entry;
 import store.datatypes.StringValue;
 
-public class IncrByCommand extends Command {
+public class DecrCommand extends Command {
     private final ByteArrayKey key;
-    private final long increment;
 
-    public IncrByCommand(List<RespType> args) {
+    public DecrCommand(List<RespType> args) {
         super(args);
 
-        if (args.size() != 3) {
+        if (args.size() != 2) {
             throw new RespError(
                 "ERR",
-                "wrong number of arguments for 'incrby' command"
+                "wrong number of arguments for 'decr' command"
             );
         }
 
         this.key = new ByteArrayKey(((RespBulkString)args.get(1)).data());
-        try {
-            increment = Long.parseLong(((RespBulkString)args.get(2)).toString());
-        } catch (NumberFormatException ne) {
-            throw new RespError("ERR", "value is not an integer or out of range");
-        }
     }
 
     @Override
@@ -40,8 +34,8 @@ public class IncrByCommand extends Command {
         Entry oldVal = store.get(key);
 
         if (oldVal == null) {
-            store.set(key, new Entry(new StringValue(Long.toString(increment).getBytes(StandardCharsets.US_ASCII))));
-            return new RespInteger(increment);
+            store.set(key, new Entry(new StringValue(new byte[]{'-', '1'})));
+            return new RespInteger(-1);
         }
 
         if (!(oldVal.getValue() instanceof StringValue strVal)) {
@@ -51,7 +45,7 @@ public class IncrByCommand extends Command {
         long value;
         try {
             value = Long.parseLong(strVal.toString());
-            value = Math.addExact(value, increment);
+            value = Math.subtractExact(value, 1);
             strVal.set(Long.toString(value).getBytes(StandardCharsets.US_ASCII));
         } catch (NumberFormatException ne) {
             throw new RespError("ERR", "value is not an integer or out of range");
