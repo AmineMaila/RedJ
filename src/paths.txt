@@ -26,6 +26,7 @@
 ./src/commands/StringCommands/DecrByCommand.java
 ./src/commands/KeyCommands/DelCommand.java
 ./src/commands/KeyCommands/ExpireCommand.java
+./src/commands/KeyCommands/TTLCommand.java
 ./src/client/ClientHandler.java
 ./src/client/resptypes/RespError.java
 ./src/client/resptypes/RespInteger.java

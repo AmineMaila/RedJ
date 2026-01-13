@@ -10,6 +10,7 @@ import client.resptypes.RespType;
 import commands.Command;
 import commands.KeyCommands.DelCommand;
 import commands.KeyCommands.ExpireCommand;
+import commands.KeyCommands.TTLCommand;
 import commands.StringCommands.DecrByCommand;
 import commands.StringCommands.DecrCommand;
 import commands.StringCommands.GetCommand;
@@ -47,6 +48,7 @@ public class CommandParser {
         // at this stage commands expect a List of RespBulkString
         return switch (cmdStr) {
             // key commands
+            case "TTL" -> new TTLCommand(args);
             case "DEL" -> new DelCommand(args);
             case "EXPIRE" -> new ExpireCommand(args);
             // String commands
