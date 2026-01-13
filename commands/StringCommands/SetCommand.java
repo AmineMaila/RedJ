@@ -72,7 +72,7 @@ public class SetCommand extends Command {
         try {
             return Long.parseLong(((RespBulkString) args.get(index)).toString());
         } catch (NumberFormatException ne) {
-            throw new RespError("ERR", "value is not an integer or out of range ");
+            throw new RespError("ERR", "value is not an integer or out of range");
         }
     }
 

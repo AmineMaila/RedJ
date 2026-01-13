@@ -1,5 +1,7 @@
 package store.datatypes;
 
+import java.nio.charset.StandardCharsets;
+
 import client.resptypes.RespBulkString;
 import client.resptypes.RespType;
 
@@ -21,10 +23,6 @@ public final class StringValue implements Value {
     public int size() {
         return this.data.length;
     }
-    
-    public RespBulkString toRespBulk() {
-        return new RespBulkString(data);
-    }
 
     @Override
     public EntryType type() {
@@ -34,5 +32,10 @@ public final class StringValue implements Value {
     @Override
     public RespType toResp() {
         return new RespBulkString(data);
+    }
+
+    @Override
+    public final String toString() {
+        return new String(data, StandardCharsets.US_ASCII);
     }
 }

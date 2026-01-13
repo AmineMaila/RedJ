@@ -11,6 +11,7 @@ import commands.Command;
 import commands.KeyCommands.DelCommand;
 import commands.KeyCommands.ExpireCommand;
 import commands.StringCommands.GetCommand;
+import commands.StringCommands.IncrCommand;
 import commands.StringCommands.MSetCommand;
 import commands.StringCommands.SetCommand;
 
@@ -41,11 +42,14 @@ public class CommandParser {
 
         // at this stage commands expect a List of RespBulkString
         return switch (cmdStr) {
-            case "GET" -> new GetCommand(args);
-            case "SET" -> new SetCommand(args);
+            // key commands
             case "DEL" -> new DelCommand(args);
             case "EXPIRE" -> new ExpireCommand(args);
+            // String commands
+            case "GET" -> new GetCommand(args);
+            case "SET" -> new SetCommand(args);
             case "APPEND" -> new ExpireCommand(args);
+            case "INCR" -> new IncrCommand(args);
             case "MSET" -> new MSetCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
