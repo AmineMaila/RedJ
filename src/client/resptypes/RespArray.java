@@ -9,6 +9,11 @@ public record RespArray(List<RespType> arr) implements RespType{
 
     @Override
     public void writeTo(BufferedOutputStream out) throws IOException {
+        if (arr == null) {
+            out.write("*-1\r\n".getBytes(StandardCharsets.US_ASCII));
+            out.flush();
+            return;
+        }
         out.write('*');
         out.write(Integer.toString(arr.size()).getBytes(StandardCharsets.US_ASCII));
         out.write(RespType.CRLF);

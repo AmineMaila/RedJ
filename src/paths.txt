@@ -27,6 +27,15 @@
 ./src/commands/KeyCommands/DelCommand.java
 ./src/commands/KeyCommands/ExpireCommand.java
 ./src/commands/KeyCommands/TTLCommand.java
+./src/commands/KeyCommands/ExistsCommand.java
+./src/commands/ListCommands/LPushCommand.java
+./src/commands/ListCommands/RPushCommand.java
+./src/commands/ListCommands/LRangeCommand.java
+./src/commands/ListCommands/LLenCommand.java
+./src/commands/ListCommands/LIndexCommand.java
+./src/commands/ListCommands/LPopCommand.java
+./src/commands/ListCommands/RPopCommand.java
+./src/commands/ListCommands/LSetCommand.java
 ./src/client/ClientHandler.java
 ./src/client/resptypes/RespError.java
 ./src/client/resptypes/RespInteger.java

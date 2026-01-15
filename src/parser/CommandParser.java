@@ -11,6 +11,14 @@ import commands.Command;
 import commands.KeyCommands.DelCommand;
 import commands.KeyCommands.ExpireCommand;
 import commands.KeyCommands.TTLCommand;
+import commands.ListCommands.LIndexCommand;
+import commands.ListCommands.LLenCommand;
+import commands.ListCommands.LPopCommand;
+import commands.ListCommands.LPushCommand;
+import commands.ListCommands.LRangeCommand;
+import commands.ListCommands.RPopCommand;
+import commands.ListCommands.RPushCommand;
+import commands.ListCommands.LSetCommand;
 import commands.StringCommands.DecrByCommand;
 import commands.StringCommands.DecrCommand;
 import commands.StringCommands.GetCommand;
@@ -61,6 +69,14 @@ public class CommandParser {
             case "INCRBY" -> new IncrByCommand(args);
             case "DECRBY" -> new DecrByCommand(args);
             case "STRLEN" -> new StrlenCommand(args);
+            // List commands
+            case "LPOP" -> new LPopCommand(args);
+            case "RPOP" -> new RPopCommand(args);
+            case "LPUSH" -> new LPushCommand(args);
+            case "RPUSH" -> new RPushCommand(args);
+            case "LRANGE" -> new LRangeCommand(args);
+            case "LINDEX" -> new LIndexCommand(args);
+            case "LLEN" -> new LLenCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
     }

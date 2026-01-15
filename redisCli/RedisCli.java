@@ -323,6 +323,8 @@ public class RedisCli {
             RespArray a = (RespArray) r;
             if (a.items == null) {
                 System.out.println("(nil)");
+            } else if (a.items.length == 0) {
+                System.out.println("(empty array)");
             } else {
                 for (int i = 0; i < a.items.length; i++) {
                     System.out.print((i + 1) + ") ");
