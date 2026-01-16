@@ -10,6 +10,7 @@ import client.resptypes.RespType;
 import commands.Command;
 import commands.KeyCommands.DelCommand;
 import commands.KeyCommands.ExpireCommand;
+import commands.KeyCommands.PingCommand;
 import commands.KeyCommands.TTLCommand;
 import commands.ListCommands.LIndexCommand;
 import commands.ListCommands.LLenCommand;
@@ -58,6 +59,7 @@ public class CommandParser {
             case "TTL" -> new TTLCommand(args);
             case "DEL" -> new DelCommand(args);
             case "EXPIRE" -> new ExpireCommand(args);
+            case "PING" -> new PingCommand(args);
             // String commands
             case "GET" -> new GetCommand(args);
             case "SET" -> new SetCommand(args);
