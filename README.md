@@ -98,7 +98,7 @@ The server uses a **hybrid concurrency model**:
 
 ```mermaid
 flowchart LR
-    subgraph Clients["Client Threads (RESP Parsing & I/O)"]
+    subgraph Clients["Client Threads"]
         C1["Client #1"]
         C2["Client #2"]
         C3["Client #3"]
@@ -106,7 +106,7 @@ flowchart LR
 
     Q["LinkedBlockingQueue<WorkItem>"]
 
-    subgraph Dispatcher["Command Dispatcher (Single Thread)"]
+    subgraph Dispatcher["Command Dispatcher"]
         D["Poll → Execute Command (Atomic)"]
     end
 
