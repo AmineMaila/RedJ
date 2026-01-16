@@ -1,4 +1,4 @@
-# 🧠 mini-redis
+# 🧠 RedJ
 
 > A Redis-inspired server implemented in **Java 17** — built to **learn internals**, not to replace Redis 🚀
 
@@ -12,7 +12,7 @@
 
 ## 📌 Overview
 
-**mini-redis** is a compact, Redis-compatible server written in Java.  
+**RedJ** is a compact, Redis-compatible server written in Java.  
 It was built as a **learning project** to explore:
 
 - Redis internals
@@ -66,7 +66,7 @@ Commands currently implemented in `src/commands`:
 
 ## 🧩 Architecture Overview
 
-mini-redis is intentionally split into **clear, inspectable modules**, making it easy to extend and reason about.
+RedJ is intentionally split into **clear, inspectable modules**, making it easy to extend and reason about.
 
 ---
 
