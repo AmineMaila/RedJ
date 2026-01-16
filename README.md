@@ -31,20 +31,6 @@ Threading & execution model
 
 This model keeps parsing and I/O concurrent while ensuring command execution is atomic and sequential.
 
-Simple diagram
-
-```mermaid
-sequenceDiagram
-    participant C1 as Client Threads
-    participant Q as LinkedBlockingQueue
-    participant D as CommandDispatcher (Single Thread)
-
-    C1->>Q: enqueue(Command)
-    Q->>D: poll()
-    D->>D: execute command atomically
-
-```
-
 Core components
 - Network / I/O
   - Thread-per-client blocking I/O handlers that read RESP from sockets and enqueue work.
@@ -59,6 +45,25 @@ Design notes
 - The Actor-style CommandDispatcher simplifies concurrency by serializing command execution; this minimizes the need for fine-grained locking in the DataStore and makes correctness easier to reason about.
 - Code is organized so parsing, storage, and networking are separated — this keeps the implementation approachable and makes it simpler to add new commands or swap components (for example, to add persistence later).
 - Correctness for core commands is prioritized over premature optimization.
+
+Simple diagram
+```mermaid
+flowchart LR
+    subgraph Clients[" "]
+        C1["Client #1 Thread"]
+        C2["Client #2 Thread"]
+        C3["Client #3 Thread"]
+    end
+    Q["LinkedBlockingQueue"]
+    subgraph Dispatcher[" "]
+        direction TB
+        D["Poll & Execute Command(Atomic)"]
+    end
+    C1 --> Q
+    C2 --> Q
+    C3 --> Q
+    Q --> D
+```
 
 Requirements
 - Java 17+
