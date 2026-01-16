@@ -33,12 +33,26 @@ This model keeps parsing and I/O concurrent while ensuring command execution is 
 
 Simple diagram
 
-Client threads (parse RESP)                CommandDispatcher (single thread)
---------------------------                ---------------------------------
-[client #1 thread]  \                       [ poll queue -> execute Command ]
-[client #2 thread]   \--> LinkedBlockingQueue 
-[client #3 thread]   /                       [ poll queue -> execute Command ]
-                     /
+```mermaid
+flowchart LR
+    subgraph Clients["Client Threads (Parse RESP)"]
+        C1["Client #1 Thread"]
+        C2["Client #2 Thread"]
+        C3["Client #3 Thread"]
+    end
+
+    Q["LinkedBlockingQueue"]
+
+    subgraph Dispatcher["CommandDispatcher (Single Thread)"]
+        D["Poll & Execute Command\n(Atomic)"]
+    end
+
+    C1 --> Q
+    C2 --> Q
+    C3 --> Q
+
+    Q --> D
+```
 
 Core components
 - Network / I/O
