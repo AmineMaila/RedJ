@@ -34,20 +34,15 @@ This model keeps parsing and I/O concurrent while ensuring command execution is 
 Simple diagram
 
 ```mermaid
-flowchart TB
-    subgraph Clients["Client Threads (Parse RESP)"]
-        C1["Client #1 Thread"]
-        C2["Client #2 Thread"]
-        C3["Client #3 Thread"]
-    end
+sequenceDiagram
+    participant C1 as Client Threads
+    participant Q as LinkedBlockingQueue
+    participant D as CommandDispatcher (Single Thread)
 
-    Q["LinkedBlockingQueue"]
+    C1->>Q: enqueue(Command)
+    Q->>D: poll()
+    D->>D: execute command atomically
 
-    subgraph Dispatcher["CommandDispatcher (Single Thread)"]
-        D["Poll & Execute Command\n(Atomic)"]
-    end
-
-    Clients --> Q --> Dispatcher
 ```
 
 Core components
