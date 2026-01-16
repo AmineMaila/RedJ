@@ -1,9 +1,14 @@
 # mini-redis
 
-mini-redis is a lightweight Redis-compatible server implemented in Java. It began as a personal project to learn Redis internals and practice Java systems programming; it is a small, focused reimplementation of Redis primitives in Java and is not intended as a production replacement for Redis.
+> A small Redis-inspired server implemented in Java — built to learn, not to replace Redis 🚀
 
-Status
-- Purpose: Implementing Redis in Java as a learning project (author-centric)
+[![Java](https://img.shields.io/badge/Java-17%2B-blue)](https://www.oracle.com/java/)
+[![Status](https://img.shields.io/badge/status-stable%20for%20implemented%20commands-yellowgreen)]
+
+mini-redis is a compact Redis-compatible server written in Java. It started as a personal project to explore Redis internals and to get hands-on practice with Java systems programming. The goal is clarity and correctness for core commands; production-grade features are out of scope for now.
+
+Quick summary
+- Purpose: Implementing Redis in Java as a learning and exploration project
 - Stability: Stable for the implemented commands listed below
 - Maturity: Work-in-progress — more commands and features are planned
 
@@ -18,28 +23,37 @@ The commands currently implemented in src/commands (as of the latest commit) inc
   - LPUSH, RPUSH, LRANGE, LLEN, LINDEX, LPOP, RPOP, LSET
 
 Architecture overview
-mini-redis is organized into modular components that separate networking, parsing, command execution, and storage.
+mini-redis is split into clear modules so each responsibility is easy to inspect and extend.
 
-- Thread-per-client I/O
-  - Each client connection is handled by its own thread. Client threads perform blocking I/O and parse the incoming RESP data stream.
+Threading & execution model
+- Per-client threads handle network I/O and parse the incoming RESP data stream. Each client connection runs on its own thread and turns RESP arrays into Command objects.
+- A single dispatcher thread (the Actor module) serializes command execution: client threads enqueue WorkItem objects into a shared LinkedBlockingQueue; the dispatcher polls one WorkItem at a time and executes the contained Command against the DataStore.
 
-- Actor module / CommandDispatcher (single dispatcher thread)
-  - Command execution is serialized through an Actor-style dispatcher: client threads enqueue WorkItem objects into a shared LinkedBlockingQueue and a single CommandDispatcher runnable consumes the queue, polls one command at a time, and executes it against the DataStore.
-  - This design gives atomic, sequential command execution inside the dispatcher and simplifies concurrency reasoning for core operations.
+This model keeps parsing and I/O concurrent while ensuring command execution is atomic and sequential.
 
-- Command parsing
-  - A RESP2 parser decodes and encodes requests and responses. The CommandParser converts parsed RESP arrays into concrete Command objects.
+Simple diagram
 
+Client threads (parse RESP)                CommandDispatcher (single thread)
+--------------------------                ---------------------------------
+[client #1 thread]  \                       [ poll queue -> execute Command ]
+[client #2 thread]   \--> LinkedBlockingQueue 
+[client #3 thread]   /                       [ poll queue -> execute Command ]
+                     /
+
+Core components
+- Network / I/O
+  - Thread-per-client blocking I/O handlers that read RESP from sockets and enqueue work.
+- Command parser
+  - RESP2 parser + CommandParser that builds Command objects from RESP arrays.
+- Actor / CommandDispatcher
+  - A Runnable that consumes a single LinkedBlockingQueue<WorkItem> and executes commands against the DataStore.
 - Storage
-  - An in-memory DataStore holds keys and typed values (StringValue, ListValue, HashValue, SetValue). Entry objects wrap values stored in the DataStore.
-
-- Concurrency model
-  - Per-client threads handle network I/O and parsing of the RESP stream.
-  - A single dispatcher thread (the Actor module) processes WorkItem commands sequentially to ensure atomic access and reduce the need for fine-grained locking in the DataStore.
+  - In-memory DataStore storing typed values (StringValue, ListValue, HashValue, SetValue) wrapped in Entry objects (with optional expiration timestamps).
 
 Design notes
-- The code structure isolates parsing, storage, and networking to make it easier to add new commands or swap implementations (for example, swap in a persistent store later).
-- Emphasis on correctness for core commands before optimizing for extreme performance.
+- The Actor-style CommandDispatcher simplifies concurrency by serializing command execution; this minimizes the need for fine-grained locking in the DataStore and makes correctness easier to reason about.
+- Code is organized so parsing, storage, and networking are separated — this keeps the implementation approachable and makes it simpler to add new commands or swap components (for example, to add persistence later).
+- Correctness for core commands is prioritized over premature optimization.
 
 Requirements
 - Java 17+
