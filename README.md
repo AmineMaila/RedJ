@@ -1,78 +1,116 @@
-# mini-redis
+# 🧠 mini-redis
 
-> A small Redis-inspired server implemented in Java — built to learn, not to replace Redis 🚀
+> A Redis-inspired server implemented in **Java 17** — built to **learn internals**, not to replace Redis 🚀
 
-[![Java](https://img.shields.io/badge/Java-17%2B-blue)](https://www.oracle.com/java/)
-[![Status](https://img.shields.io/badge/status-stable%20for%20implemented%20commands-yellowgreen)]
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17%2B-blue" />
+  <img src="https://img.shields.io/badge/status-stable%20for%20implemented%20commands-yellowgreen" />
+  <img src="https://img.shields.io/badge/focus-learning%20project-informational" />
+</p>
 
-mini-redis is a compact Redis-compatible server written in Java. It started as a personal project to explore Redis internals and to get hands-on practice with Java systems programming. The goal is clarity and correctness for core commands; production-grade features are out of scope for now.
+---
 
-Quick summary
-- Purpose: Implementing Redis in Java as a learning and exploration project
-- Stability: Stable for the implemented commands listed below
-- Maturity: Work-in-progress — more commands and features are planned
+## 📌 Overview
 
-Implemented commands
-The commands currently implemented in src/commands (as of the latest commit) include:
+**mini-redis** is a compact, Redis-compatible server written in Java.  
+It was built as a **learning project** to explore:
 
-- String commands
-  - GET, SET, MSET, APPEND, INCR, INCRBY, DECR, DECRBY, STRLEN
-- Key commands
-  - DEL, EXPIRE, TTL, EXISTS
-- List commands
-  - LPUSH, RPUSH, LRANGE, LLEN, LINDEX, LPOP, RPOP, LSET
+- Redis internals
+- RESP protocol parsing
+- Concurrency and command execution models
+- Java systems programming
 
-Architecture overview
-mini-redis is split into clear modules so each responsibility is easy to inspect and extend.
+The emphasis is on **clarity, correctness, and architecture**, not production completeness.
 
-Threading & execution model
-- Per-client threads handle network I/O and parse the incoming RESP data stream. Each client connection runs on its own thread and turns RESP arrays into Command objects.
-- A single dispatcher thread (the Actor module) serializes command execution: client threads enqueue WorkItem objects into a shared LinkedBlockingQueue; the dispatcher polls one WorkItem at a time and executes the contained Command against the DataStore.
+> ⚠️ This project is **not** a production Redis replacement.
 
-This model keeps parsing and I/O concurrent while ensuring command execution is atomic and sequential.
+---
 
-Core components
-- Network / I/O
-  - Thread-per-client blocking I/O handlers that read RESP from sockets and enqueue work.
-- Command parser
-  - RESP2 parser + CommandParser that builds Command objects from RESP arrays.
-- Actor / CommandDispatcher
-  - A Runnable that consumes a single LinkedBlockingQueue<WorkItem> and executes commands against the DataStore.
-- Storage
-  - In-memory DataStore storing typed values (StringValue, ListValue, HashValue, SetValue) wrapped in Entry objects (with optional expiration timestamps).
+## 🎯 Project Goals
 
-Design notes
-- The Actor-style CommandDispatcher simplifies concurrency by serializing command execution; this minimizes the need for fine-grained locking in the DataStore and makes correctness easier to reason about.
-- Code is organized so parsing, storage, and networking are separated — this keeps the implementation approachable and makes it simpler to add new commands or swap components (for example, to add persistence later).
-- Correctness for core commands is prioritized over premature optimization.
+- ✅ Understand Redis command execution semantics
+- ✅ Implement core Redis data types and commands
+- ✅ Explore concurrency models (Actor-style execution)
+- ❌ Persistence, clustering, and replication (out of scope for now)
 
-Simple diagram
+---
+
+## ⚙️ Implemented Commands
+
+Commands currently implemented in `src/commands`:
+
+### 🔤 String Commands
+- `GET`, `SET`, `MSET`
+- `APPEND`
+- `INCR`, `INCRBY`
+- `DECR`, `DECRBY`
+- `STRLEN`
+
+### 🔑 Key Commands
+- `DEL`
+- `EXPIRE`
+- `TTL`
+- `EXISTS`
+
+### 📚 List Commands
+- `LPUSH`, `RPUSH`
+- `LRANGE`
+- `LLEN`
+- `LINDEX`
+- `LPOP`, `RPOP`
+- `LSET`
+
+> 🟢 All listed commands are stable and tested within the current architecture.
+
+---
+
+## 🧩 Architecture Overview
+
+mini-redis is intentionally split into **clear, inspectable modules**, making it easy to extend and reason about.
+
+---
+
+## 🧵 Threading & Execution Model
+
+The server uses a **hybrid concurrency model**:
+
+### Client Side
+- Each client connection runs on its **own thread**
+- Responsibilities:
+  - Blocking socket I/O
+  - RESP parsing
+  - Command construction
+  - Enqueuing work
+
+### Execution Side
+- A **single dispatcher thread** (Actor-style)
+- Ensures:
+  - Atomic command execution
+  - Deterministic behavior
+  - Minimal locking in the data store
+
+### Why this model?
+> Parsing and I/O remain concurrent, while **all command execution is serialized**, closely matching Redis’ execution guarantees.
+
+---
+
+## 🔁 Execution Flow (Diagram)
+
 ```mermaid
 flowchart LR
-    subgraph Clients[" "]
-        C1["Client #1 Thread"]
-        C2["Client #2 Thread"]
-        C3["Client #3 Thread"]
+    subgraph Clients["Client Threads (RESP Parsing & I/O)"]
+        C1["Client #1"]
+        C2["Client #2"]
+        C3["Client #3"]
     end
-    Q["LinkedBlockingQueue"]
-    subgraph Dispatcher[" "]
-        direction TB
-        D["Poll & Execute Command(Atomic)"]
+
+    Q["LinkedBlockingQueue<WorkItem>"]
+
+    subgraph Dispatcher["Command Dispatcher (Single Thread)"]
+        D["Poll → Execute Command (Atomic)"]
     end
+
     C1 --> Q
     C2 --> Q
     C3 --> Q
     Q --> D
-```
-
-Requirements
-- Java 17+
-
-Contributing
-- Pull requests and issues are welcome. Contributions that improve correctness, tests, or documentation are appreciated.
-
-License
-- Add your preferred license (e.g., MIT) to the repository.
-
-Notes
-- This project was created to learn Redis internals and Java server programming. It is not a production Redis replacement and remains a work-in-progress.
