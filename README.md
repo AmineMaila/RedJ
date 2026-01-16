@@ -36,6 +36,7 @@ Simple diagram
 ```mermaid
 flowchart LR
     subgraph Clients["Client Threads (Parse RESP)"]
+        S1[" "]:::spacer
         C1["Client #1 Thread"]
         C2["Client #2 Thread"]
         C3["Client #3 Thread"]
@@ -44,14 +45,16 @@ flowchart LR
     Q["LinkedBlockingQueue"]
 
     subgraph Dispatcher["CommandDispatcher (Single Thread)"]
+        S2[" "]:::spacer
         D["Poll & Execute Command\n(Atomic)"]
     end
 
     C1 --> Q
     C2 --> Q
     C3 --> Q
-
     Q --> D
+
+    classDef spacer fill:transparent,stroke:
 ```
 
 Core components
