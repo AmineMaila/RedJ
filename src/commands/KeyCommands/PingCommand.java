@@ -6,7 +6,6 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import commands.Command;
-import store.ByteArrayKey;
 import store.DataStore;
 
 public class PingCommand extends Command {
@@ -17,7 +16,7 @@ public class PingCommand extends Command {
         if (args.size() > 2) {
             throw new RespError(
                 "ERR",
-                "wrong number of arguments for 'del' command"
+                "wrong number of arguments for 'ping' command"
             );
         }
 

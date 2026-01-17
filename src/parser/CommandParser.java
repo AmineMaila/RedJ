@@ -8,6 +8,16 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import commands.Command;
+import commands.HashCommands.HDelCommand;
+import commands.HashCommands.HExistsCommand;
+import commands.HashCommands.HGetAllCommand;
+import commands.HashCommands.HGetCommand;
+import commands.HashCommands.HIncrByCommand;
+import commands.HashCommands.HKeysCommand;
+import commands.HashCommands.HLenCommand;
+import commands.HashCommands.HMGetCommand;
+import commands.HashCommands.HSetCommand;
+import commands.HashCommands.HValsCommand;
 import commands.KeyCommands.DelCommand;
 import commands.KeyCommands.ExpireCommand;
 import commands.KeyCommands.PingCommand;
@@ -78,6 +88,17 @@ public class CommandParser {
             case "LRANGE" -> new LRangeCommand(args);
             case "LINDEX" -> new LIndexCommand(args);
             case "LLEN" -> new LLenCommand(args);
+            // Hash Commands
+            case "HSET" -> new HSetCommand(args);
+            case "HGET" -> new HGetCommand(args);
+            case "HEXISTS" -> new HExistsCommand(args);
+            case "HDEL" -> new HDelCommand(args);
+            case "HLEN" -> new HLenCommand(args);
+            case "HGETALL" -> new HGetAllCommand(args);
+            case "HINCRBY" -> new HIncrByCommand(args);
+            case "HMGET" -> new HMGetCommand(args);
+            case "HKEYS" -> new HKeysCommand(args);
+            case "HVALS" -> new HValsCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
     }

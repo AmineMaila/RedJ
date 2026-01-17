@@ -8,15 +8,29 @@ import java.util.Set;
 import client.resptypes.RespArray;
 import client.resptypes.RespBulkString;
 import client.resptypes.RespType;
+import store.ByteArrayKey;
 
 public final class SetValue implements Value {
-    private final Set<byte[]> members = new HashSet<>();
 
-    public boolean add(byte[] member) {
-        return members.add(member);
+    private final Set<ByteArrayKey> members = new HashSet<>();
+
+    public boolean sadd(byte[] member) {
+        return members.add(new ByteArrayKey(member));
     }
 
-    public Set<byte[]> members() {
+    public boolean srem(byte[] member) {
+        return members.remove(new ByteArrayKey(member));
+    }
+
+    public boolean contains(byte[] member) {
+        return members.contains(new ByteArrayKey(member));
+    }
+
+    public int size() {
+        return members.size();
+    }
+
+    public Set<ByteArrayKey> members() {
         return members;
     }
 
@@ -27,10 +41,11 @@ public final class SetValue implements Value {
 
     @Override
     public RespType toResp() {
-        List<RespType> items = new ArrayList<>();
+        List<RespType> items = new ArrayList<>(members.size());
         for (var m : members) {
-            items.add(new RespBulkString(m));
+            items.add(new RespBulkString(m.bytes()));
         }
         return new RespArray(items);
     }
 }
+
