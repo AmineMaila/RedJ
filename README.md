@@ -72,7 +72,9 @@ Commands currently implemented in `src/commands`:
 ### 📙 Set Commands
 - `SADD`, `SREM`
 - `SCARD`
-- `SMEMBERS`
+- `SMEMBERS`, `SISMEMBER`
+- `SRANDMEMBER`
+- `SPOP`
 
 > 🟢 All listed commands are stable and tested within the current architecture.
 
