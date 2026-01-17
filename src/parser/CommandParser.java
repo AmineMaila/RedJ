@@ -29,6 +29,10 @@ import commands.ListCommands.LPushCommand;
 import commands.ListCommands.LRangeCommand;
 import commands.ListCommands.RPopCommand;
 import commands.ListCommands.RPushCommand;
+import commands.SetCommands.SAddCommand;
+import commands.SetCommands.SCardCommand;
+import commands.SetCommands.SMembersCommand;
+import commands.SetCommands.SRemCommand;
 import commands.StringCommands.DecrByCommand;
 import commands.StringCommands.DecrCommand;
 import commands.StringCommands.GetCommand;
@@ -99,6 +103,11 @@ public class CommandParser {
             case "HMGET" -> new HMGetCommand(args);
             case "HKEYS" -> new HKeysCommand(args);
             case "HVALS" -> new HValsCommand(args);
+            // Set Commands
+            case "SADD" -> new SAddCommand(args);
+            case "SREM" -> new SRemCommand(args);
+            case "SCARD" -> new SCardCommand(args);
+            case "SMEMBERS" -> new SMembersCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
     }
