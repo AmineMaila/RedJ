@@ -8,6 +8,9 @@ import client.resptypes.RespBulkString;
 import client.resptypes.RespError;
 import client.resptypes.RespType;
 import commands.Command;
+import commands.ControlCommands.DiscardCommand;
+import commands.ControlCommands.ExecCommand;
+import commands.ControlCommands.MultiCommand;
 import commands.HashCommands.HDelCommand;
 import commands.HashCommands.HExistsCommand;
 import commands.HashCommands.HGetAllCommand;
@@ -108,6 +111,10 @@ public class CommandParser {
             case "SREM" -> new SRemCommand(args);
             case "SCARD" -> new SCardCommand(args);
             case "SMEMBERS" -> new SMembersCommand(args);
+            // Transaction Commands
+            case "MULTI" -> new MultiCommand(args);
+            case "EXEC" -> new ExecCommand(args);
+            case "DISCARD" -> new DiscardCommand(args);
             default -> throw new RespError("ERR", "unknown command '" + cmdStr + "'");
         };
     }

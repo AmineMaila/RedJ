@@ -8,12 +8,6 @@ public class DataStore {
 
     public Entry get(ByteArrayKey key) {
         Entry result = STORE.get(key);
-        if (result != null) {
-            System.out.println("[" + key + ", " + result.getValue() + ", ex: " + result.getExpiresAt() + "]");
-            System.out.println("expiresAt: " + result.getExpiresAt() +  " | currentTimeMillis: " + System.currentTimeMillis());
-            System.out.println("isExpired(): " + result.isExpired());
-
-        }
         if (result == null || result.isExpired()) {
             STORE.remove(key);
             return null;

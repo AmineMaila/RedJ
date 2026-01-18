@@ -14,7 +14,7 @@ import client.ClientHandler;
 public class RedisServer {
     private final ExecutorService clientPool = Executors.newCachedThreadPool();
     private final LinkedBlockingQueue<WorkItem> cmdQueue = new LinkedBlockingQueue<>();
-    private final int TIMEOUT = 60000;
+    private final int TIMEOUT = 300000;
     private final int port;
     private volatile boolean running = true;
 
@@ -37,7 +37,6 @@ public class RedisServer {
             while(running) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    System.out.println("Client '" + clientSocket + "' connected");
                     clientSocket.setSoTimeout(TIMEOUT); // timeout on hanging read call
                     clientPool.execute(new ClientHandler(clientSocket, this.cmdQueue));
                 } catch (SocketException se) {
