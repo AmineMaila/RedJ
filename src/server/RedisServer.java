@@ -35,8 +35,7 @@ public class RedisServer {
             consumerExecutor.execute(new CommandDispatcher(cmdQueue));
 
             while(running) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
+                try (Socket clientSocket = serverSocket.accept()){
                     clientSocket.setSoTimeout(TIMEOUT); // timeout on hanging read call
                     clientPool.execute(new ClientHandler(clientSocket, this.cmdQueue));
                 } catch (SocketException se) {
