@@ -1,6 +1,6 @@
 # RedJ
 
-> A Redis-inspired server implemented in **Java 17** — built to **learn internals**, not to replace Redis 🚀
+> A Redis-inspired server implemented in **Java 17** — built to **learn internals**, not to replace Redis
 
 <p align="center">
   <img src="https://img.shields.io/badge/Java-17%2B-blue" />
@@ -113,7 +113,7 @@ Commands currently implemented in `src/commands`:
 * `EXEC`
 * `DISCARD`
 
-> 🟢 All listed commands are stable and tested within the current architecture.
+>  All listed commands are stable and tested within the current architecture.
 
 ---
 
